@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Intel OS - Ultimate Multi-Tenant Suite</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR CONTROL CENTER -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between h-full shrink-0 z-20">
+        <div class="p-5 space-y-6 overflow-y-auto h-[calc(100vh-80px)]">
+            <!-- Branding Logo -->
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-500/20">S</div>
+                <div>
+                    <h1 class="font-bold text-sm leading-none text-white tracking-tight">SocialIntel</h1>
+                    <span class="text-[9px] text-blue-400 font-bold tracking-widest uppercase">Enterprise Suite</span>
+                </div>
+            </div>
+
+            <!-- SIMULASI TEAM SWITCHER (User Access Control) -->
+            <div class="space-y-1.5 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block"><i class="fa-solid fa-user-gear text-purple-400 mr-1"></i> Active Team Operator</label>
+                <select id="teamUserSwitcher" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-[11px] font-bold text-white outline-none cursor-pointer">
+                    <option value="Andi (Sosmed Specialist)">🧑‍💻 Andi (Sosmed Specialist)</option>
+                    <option value="Budi (Content Creator)">🎨 Budi (Content Creator)</option>
+                    <option value="Cici (Brand Owner)">👩‍💼 Cici (Brand Owner)</option>
+                </select>
+            </div>
+
+            <!-- MULTIPLE ACTIVE ACCOUNT SWITCHER -->
+            <div class="space-y-1.5 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block"><i class="fa-solid fa-shuffle text-blue-400 mr-1"></i> Active Workspace</label>
+                <select id="accountSwitcher" onchange="handleAccountDatabaseSwitch()" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-[11px] font-bold text-white outline-none cursor-pointer">
+                    <option value="acc1" id="opt-acc1">💼 Slot 1: EduTech Co.</option>
+                    <option value="acc2" id="opt-acc2">💼 Slot 2: Ayam Nampol</option>
+                    <option value="acc3" id="opt-acc3">💼 Slot 3: Kosong / Baru</option>
+                    <option value="acc4" id="opt-acc4">💼 Slot 4: Kosong / Baru</option>
+                    <option value="acc5" id="opt-acc5">💼 Slot 5: Kosong / Baru</option>
+                </select>
+            </div>
+
+            <!-- Navigation Links Matrix Menu -->
+            <nav class="space-y-1">
+                <button onclick="switchAppTabSection('overview-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 bg-blue-600 text-white font-semibold rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-chart-pie text-base w-5 text-center"></i><span>Dashboard Overview</span>
+                </button>
+                <button onclick="switchAppTabSection('blueprint-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-fingerprint text-base w-5 text-center"></i><span>Brand Blueprint (Asesmen)</span>
+                </button>
+                <button onclick="switchAppTabSection('ideation-room-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-comments text-base w-5 text-center"></i><span>AI Ideation Room</span>
+                </button>
+                <button onclick="switchAppTabSection('content-matrix-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-lightbulb text-base w-5 text-center"></i><span>Content Ideation Matrix</span>
+                </button>
+                <button onclick="switchAppTabSection('viral-engine-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-wand-magic-sparkles text-base w-5 text-center"></i><span>Viral Engine</span>
+                </button>
+                <button onclick="switchAppTabSection('content-database-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-database text-base w-5 text-center"></i><span>Content Database</span>
+                </button>
+                <button onclick="switchAppTabSection('kanban-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-table-list text-base w-5 text-center"></i><span>Kanban Board</span>
+                </button>
+                <button onclick="switchAppTabSection('performance-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-chart-line text-base w-5 text-center"></i><span>Performance Tracker</span>
+                </button>
+                <button onclick="switchAppTabSection('reporting-tab', this)" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white font-medium rounded-xl transition-all text-left tab-btn text-xs">
+                    <i class="fa-solid fa-file-powerpoint text-base w-5 text-center"></i><span>Reporting & Slide Decks</span>
+                </button>
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-800 bg-slate-950/50 m-4 rounded-xl text-center text-[10px] text-slate-500 font-bold">
+            Social Intel OS v2.8 Ultimate
+        </div>
+    </aside>
+
+    <!-- MAIN INTERACTIVE DISPLAY VIEWPORT -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden bg-slate-950">
+        
+        <!-- HEADER CENTER -->
+        <header class="bg-slate-900 border-b border-slate-800 h-20 px-8 flex items-center justify-between shrink-0">
+            <div>
+                <h2 id="viewHeaderTitle" class="text-sm font-bold text-white tracking-tight">Dashboard Overview Panel</h2>
+                <p id="viewHeaderDesc" class="text-xs text-slate-400">Navigasi pusat kendali data strategi terintegrasi.</p>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 flex items-center gap-2 text-xs font-semibold">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                Active Brand Profile: <span id="headerBrandBadge" class="text-blue-400 ml-1">EduTech Co.</span>
+            </div>
+        </header>
+
+        <!-- VIEW WRAPPER INNER CARDS CONTAINER -->
+        <div class="flex-1 overflow-y-auto p-8 z-10 space-y-6">
+
+            <!-- 1. TAB OVERVIEW (REAL ACCOUNTS MOCK CONDITION LIST & INSTANT ACTIONS) -->
+            <div id="overview-tab" class="space-y-6 tab-content-view">
+                <!-- INSTANT ACTION SHORTCUT MATRIX -->
+                <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-bolt text-amber-400"></i><span class="text-xs font-bold uppercase tracking-wider text-slate-300">Instant Actions Matrix:</span></div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="switchAppTabSection('content-matrix-tab', null)" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 px-3 py-2 rounded-xl text-xs font-bold text-blue-400 flex items-center gap-2 transition-all"><i class="fa-solid fa-circle-plus"></i> Quick Content Draft</button>
+                        <button onclick="switchAppTabSection('blueprint-tab', null)" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 px-3 py-2 rounded-xl text-xs font-bold text-purple-400 flex items-center gap-2 transition-all"><i class="fa-solid fa-lock"></i> Edit Blueprint Brand</button>
+                        <button onclick="switchAppTabSection('performance-tab', null)" class="bg-slate-950 hover:bg-slate-800 border border-slate-800 px-3 py-2 rounded-xl text-xs font-bold text-emerald-400 flex items-center gap-2 transition-all"><i class="fa-solid fa-chart-line"></i> Input Live Analytics</button>
+                    </div>
+                </div>
+
+                <!-- REAL MULTI ACCOUNT CONDITION OVERVIEW SHOT -->
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block"><i class="fa-solid fa-layer-group mr-1"></i> Live Condition Overview of All Brand Instances</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Card Account 1 -->
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3">
+                            <div class="flex justify-between items-center"><h4 class="text-xs font-bold text-white">💼 Slot 1: EduTech Co.</h4><span class="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Active</span></div>
+                            <div class="space-y-1.5"><div class="flex justify-between text-[11px] text-slate-400"><span>Avg ER Status:</span><span class="text-emerald-400 font-mono font-bold">11.24%</span></div><div class="flex justify-between text-[11px] text-slate-400"><span>Content Vol:</span><span class="text-white font-mono">14 Posted</span></div></div>
+                        </div>
+                        <!-- Card Account 2 -->
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3">
+                            <div class="flex justify-between items-center"><h4 class="text-xs font-bold text-white">💼 Slot 2: Ayam Nampol</h4><span class="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">Active</span></div>
+                            <div class="space-y-1.5"><div class="flex justify-between text-[11px] text-slate-400"><span>Avg ER Status:</span><span class="text-emerald-400 font-mono font-bold">9.15%</span></div><div class="flex justify-between text-[11px] text-slate-400"><span>Content Vol:</span><span class="text-white font-mono">8 Posted</span></div></div>
+                        </div>
+                        <!-- Card Account 3 -->
+                        <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3 opacity-50">
+                            <div class="flex justify-between items-center"><h4 class="text-xs font-bold text-slate-400">💼 Slot 3: Empty Workspace</h4><span class="text-[9px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded font-bold">Standby</span></div>
+                            <p class="text-[11px] text-slate-600 italic">Asesmen belum dikunci.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. TAB BRAND BLUEPRINT -->
+            <div id="blueprint-tab" class="space-y-6 tab-content-view hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                    <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-fingerprint text-blue-500 mr-1"></i> Asesmen Identitas Fundamental & Pembentukan Peta Niche Klien</h3>
+                        <button onclick="saveCurrentBlueprintDataState()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/10">Simpan & Mengunci Logika AI</button>
+                    </div>
+
+                    <div class="space-y-4 bg-slate-950 p-5 rounded-2xl border border-slate-800/80">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-id-card text-blue-400"></i> Tahap Awal: Registrasi Identitas Profil Klien</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Kreator / Brand / Perusahaan / Agensi</label>
+                                <input type="text" id="bpInputBrandName" oninput="syncDropdownNameLabelOnInput(this.value)" value="EduTech Co." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-200 outline-none focus:border-blue-500 transition-all">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Fokus Niche / Spesialisasi Industri Bisnis</label>
+                                <input type="text" id="bpInputIndustryNiche" value="Pendidikan Karir Digital & Tech Bootcamp" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-200 outline-none focus:border-blue-500 transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider border-b border-slate-800 pb-1 flex items-center gap-2"><i class="fa-solid fa-comment-dots"></i> Pilar 1: Brand Identity & Voice Architecture</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Gaya Penyampaian / Gaya Komunikasi (Communication Style)</label>
+                                <select id="bpSelectCommStyle" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-bold text-slate-300 outline-none focus:border-blue-500 transition-all cursor-pointer">
+                                    <option>Edukatif, Solutif, Bersahabat tapi Tetap Profesional (B2B Focus)</option>
+                                    <option>Savage, Tren-Sentris, Humoris, Penuh Gimmick & Ekspresif (Gen-Z Target)</option>
+                                    <option>Inspiratif, Emosional, Mendalam, Penuh Empati (Storytelling Focus)</option>
+                                </select>
+                            </div>
+                            <div class="space-y-1"><label class="text-[10px] font-bold text-slate-400 uppercase">Slogan / Core Value Slogan Utama</label><input type="text" id="bpInputSlogan" value="Belajar praktis digital marketing langsung dari kacamata industri kerja" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-300 outline-none focus:border-blue-500"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. TAB AI IDEATION ROOM -->
+            <div id="tab-ideation-room" class="space-y-6 tab-content-view hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col h-[500px]">
+                    <div class="border-b border-slate-800 pb-2 mb-4 flex items-center justify-between"><h3 class="text-xs font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-comments text-purple-400 mr-2"></i> AI Creative Brainstorming Sandbox Workspace</h3></div>
+                    <div id="sandboxChatOutputWrapper" class="flex-1 overflow-y-auto space-y-3 p-3 bg-slate-950 border border-slate-800 rounded-xl mb-4 text-xs font-medium">
+                        <div class="text-slate-500 italic p-1">Ruang diskusi kreatif aktif terikat konteks strategi digital marketing brand...</div>
+                    </div>
+                    <div class="flex gap-3 shrink-0">
+                        <input type="text" id="sandboxChatInputField" placeholder="Tulis instruksi draf kasar..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs outline-none focus:border-purple-500 text-slate-200">
+                        <button onclick="executeSandboxChatResponse()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 rounded-xl text-xs transition-all"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. TAB CONTENT IDEATION MATRIX -->
+            <div id="content-matrix-tab" class="space-y-6 tab-content-view hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-blue-400"><i class="fa-solid fa-sliders mr-1"></i> Sistem Konfigurasi Modular & Penentuan Jalur Distribusi Konten</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Pilih Platform Media Sosial</label>
+                            <select id="mSelectPlatform" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none"><option>Instagram</option><option>TikTok</option><option>LinkedIn</option></select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Pilih Format Konten</label>
+                            <select id="mSelectFormat" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none"><option>Short Form Video</option><option>Text Post ONLY (LinkedIn/X)</option><option>Carousel Post</option></select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Opsi Funnel Objective Strategy</label>
+                            <select id="mSelectFunnel" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-300 outline-none"><option>Attraction (Awareness & Reach Massal)</option><option>Affinity (Consideration & Connection)</option><option>Conversion (ZMOT Transaction Funnel)</option></select>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Topik Ide Kasar Konten</label>
+                        <div class="flex gap-3">
+                            <input type="text" id="mInputTopic" value="cara gampang merakit draf portfolio digital marketing dari nol rupiah tanpa modal sepeserpun" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 outline-none focus:border-blue-500">
+                            <button onclick="generateMatrixModularDownwardFlow()" class="bg-blue-600 hover:bg-blue-700 font-bold px-6 rounded-xl text-xs transition-all shrink-0">Jalankan Modular Content Architect</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mFlowWorkspaceBox" class="space-y-6 relative hidden">
+                    <div class="absolute left-6 top-6 bottom-6 w-0.5 bg-slate-800"></div>
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-2"><h4 class="text-xs font-bold text-white uppercase tracking-wider">1. Strategic Content Angle:</h4><p class="text-xs text-slate-300 font-semibold" id="mOutputAngleLabel"></p></div>
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3"><h4 class="text-xs font-bold text-white uppercase tracking-wider">2. Varian Hook Atensi Brutal (3 Pilihan Opsi)</h4><div class="space-y-2" id="mOutputHooksBox"></div></div>
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3"><h4 class="text-xs font-bold text-white uppercase tracking-wider">3. Varian Foreshadow Pengunci Retensi (3 Pilihan Opsi)</h4><div class="space-y-2" id="mOutputForeshadowsBox"></div></div>
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3"><h4 class="text-xs font-bold text-white uppercase tracking-wider">4. Draf Narasi Isi Utama Konten (3 Pilihan Opsi)</h4><div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="mOutputBodiesBox"></div></div>
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3"><h4 class="text-xs font-bold text-white uppercase tracking-wider">5. Varian Call to Action (3 Pilihan Opsi)</h4><div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="mOutputCtasBox"></div></div>
+                    <div class="relative bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
+                        <div class="flex justify-between items-center"><h4 class="text-xs font-bold text-white uppercase tracking-wider">6. Aksesoris & Editor Caption</h4></div>
+                        <textarea id="mTextareaCaption" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 outline-none focus:border-purple-500 leading-relaxed"></textarea>
+                        <div class="flex justify-end"><button onclick="injectIntoCentralCalendarSystem('Matrix Engine')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-5 py-2 rounded-xl transition-all">Copy & Kirim ke Kalender</button></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. TAB VIRAL ENGINE -->
+            <div id="viral-engine-tab" class="space-y-6 tab-content-view hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-red-500"></i> Mesin Pembongkar Formula Struktur Konten Viral Competitor</h3>
+                    <button onclick="executeViralDetailedGridBarVisualization()" class="w-full bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-700 hover:to-amber-700 font-bold py-3 rounded-xl text-xs transition-all shadow-md shadow-red-500/10">Jalankan Pemadanan Pola Struktur Viral</button>
+                </div>
+                <div id="vDetailedMatrixGridRows" class="grid grid-cols-1 md:grid-cols-3 gap-6 hidden">
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2"><h5 class="text-[11px] font-bold text-slate-400 uppercase">Bar Struktur Pola</h5><div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-[11px] text-slate-300 font-mono">[BAR 0-3s]: High-impact overlay frame</div></div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2"><h5 class="text-[11px] font-bold text-slate-400 uppercase">Bar Shadow & Retensi</h5><div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-[11px] text-slate-300 font-mono">Foreshadow: “Cek folder di menit 01...”</div></div>
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-2"><h5 class="text-[11px] font-bold text-slate-400 uppercase">Bar Skrip Narasi</h5><div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-[11px] text-slate-300 font-mono">[SCRIPT]: Ramu ulang draf portfolio ghost campaign...</div></div>
+                </div>
+            </div>
+
+            <!-- 3. FITUR BARU: CONTENT DATABASE (FLOWRA INSPIRED SPREADSHEET MATRIX) -->
+            <div id="content-database-tab" class="space-y-6 tab-content-view hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b border-slate-800 pb-3 gap-3">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-database text-blue-400 mr-2"></i> Content Database & Asset Repository Hub</h3>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="dbSearchInput" oninput="liveSearchContentDatabaseTable()" placeholder="Cari judul konten / draf skrip..." class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-300 outline-none focus:border-blue-500">
+                            <button onclick="openAddNewContentDatabaseRowModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition-all"><i class="fa-solid fa-circle-plus"></i> Tambah Konten</button>
+                        </div>
+                    </div>
+
+                    <!-- DATA TABLE MATRIX CONTAINER -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-950 text-slate-400 font-bold border-b border-slate-800">
+                                    <th class="p-3">Title</th>
+                                    <th class="p-3">Platform</th>
+                                    <th class="p-3">Format</th>
+                                    <th class="p-3">Pillar</th>
+                                    <th class="p-3">Funnel</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3">Approval</th>
+                                    <th class="p-3 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contentDatabaseTableBodyRows" class="divide-y divide-slate-800 font-medium text-slate-300">
+                                <tr class="db-row-item"><td class="p-3 text-white font-bold tracking-tight">Kenapa ikan sapu sapu nyapu doang tapi gak ngepel</td><td class="p-3"><span class="bg-red-500/10 text-red-400 px-2 py-0.5 rounded border border-red-500/20 text-[10px] font-bold">TikTok</span></td><td class="p-3 text-slate-400">Video</td><td class="p-3">Hiburan</td><td class="p-3 font-mono text-amber-400 font-bold">TOFU</td><td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-bold">Published</span></td><td class="p-3"><span class="text-emerald-400 text-[11px]"><i class="fa-solid fa-circle-check mr-1"></i> Approved</span></td><td class="p-3 text-right text-slate-500 text-sm"><button onclick="duplicateContentDatabaseRowItem(this)" class="hover:text-blue-400 mr-2"><i class="fa-solid fa-copy"></i></button><button onclick="deleteContentDatabaseRowItem(this)" class="hover:text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>
+                                <tr class="db-row-item"><td class="p-3 text-white font-bold tracking-tight">3 tanda konten lu keliatan desperate jualan</td><td class="p-3"><span class="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 text-[10px] font-bold">Instagram</span></td><td class="p-3 text-slate-400">Carousel</td><td class="p-3">Edukasi</td><td class="p-3 font-mono text-indigo-400 font-bold">MOFU</td><td class="p-3"><span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded text-[10px] font-bold">Scripting</span></td><td class="p-3"><span class="text-amber-500 text-[11px]"><i class="fa-solid fa-clock mr-1"></i> Pending</span></td><td class="p-3 text-right text-slate-500 text-sm"><button onclick="duplicateContentDatabaseRowItem(this)" class="hover:text-blue-400 mr-2"><i class="fa-solid fa-copy"></i></button><button onclick="deleteContentDatabaseRowItem(this)" class="hover:text-red-400"><i class="fa-solid fa-trash"></i></button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. TAB CONTENT CALENDAR -->
+            <div id="calendar-tab" class="space-y-6 tab-content-view hidden">
+                <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-xl">
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-calendar text-blue-500 mr-1"></i> Linimasa Kerja Progress Kalender</div>
+                </div>
+                <div id="calendarRowsGridBox" class="grid grid-cols-7 gap-3 min-h-32 text-left">
+                    <div class="bg-slate-900 p-2 rounded-xl border border-slate-800 flex flex-col justify-between min-h-20"><span class="text-xs font-mono font-bold text-slate-600">01</span><div class="bg-amber-500/10 border border-amber-500/20 text-[8px] font-bold text-amber-400 p-1 rounded">🔥 TOFU<p class="text-[7px] text-slate-400 font-medium truncate mt-0.5">Mitos Kuliah Pemasaran</p></div></div>
+                </div>
+            </div>
+
+            <!-- FLOWRA GRADE KANBAN BOARD SYSTEM -->
+            <div id="kanban-tab" class="space-y-6 tab-content-view hidden">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="flowraKanbanBoardContainer">
+                    <!-- Column 1 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-1.5"><h5 class="text-xs font-bold text-white">1. Ideation / Draft</h5><span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded-full font-bold">2</span></div>
+                        <div class="space-y-2.5">
+                            <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2 relative">
+                                <div class="flex justify-between items-center"><span class="text-[8px] bg-blue-500/10 text-blue-400 font-bold px-1.5 py-0.5 rounded border border-blue-500/20">Instagram</span><span class="text-[8px] text-indigo-400 font-bold font-mono">MOFU</span></div>
+                                <h6 class="text-xs font-bold text-slate-200">Cara traveling tanpa mikir uang belanja</h6>
+                                <div class="flex justify-between items-center pt-2 border-t border-slate-900 text-[9px] text-slate-500 font-bold"><span>Apr 30</span><button onclick="alert('Duplicated!')" class="hover:text-blue-400"><i class="fa-solid fa-copy"></i> Duplicate</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column 2 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-1.5"><h5 class="text-xs font-bold text-white">2. Scripting</h5><span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded-full font-bold">1</span></div>
+                        <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-2 relative">
+                            <div class="flex justify-between items-center"><span class="text-[8px] bg-red-500/10 text-red-400 font-bold px-1.5 py-0.5 rounded border border-red-500/20">TikTok</span><span class="text-[8px] text-amber-400 font-bold font-mono">TOFU</span></div>
+                            <h6 class="text-xs font-bold text-slate-200">Contoh Konten Promosi Produk Pedas</h6>
+                            <div class="flex justify-between items-center pt-2 border-t border-slate-900 text-[9px] text-slate-500 font-bold"><span>Apr 19</span><button class="hover:text-blue-400"><i class="fa-solid fa-copy"></i> Duplicate</button></div>
+                        </div>
+                    </div>
+                    <!-- Column 3 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3"><div class="flex justify-between items-center border-b border-slate-800 pb-1.5"><h5 class="text-xs font-bold text-white">3. Editing Video</h5><span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded-full font-bold">0</span></div></div>
+                    <!-- Column 4 -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3"><div class="flex justify-between items-center border-b border-slate-800 pb-1.5"><h5 class="text-xs font-bold text-white">4. Ready to Post / Done</h5><span class="text-[10px] bg-slate-950 px-2 py-0.5 rounded-full font-bold">0</span></div></div>
+                </div>
+            </div>
+
+            <!-- 7. TAB PERFORMANCE TRACKER -->
+            <div id="performance-tab" class="space-y-6 tab-content-view hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex items-center justify-between"><div><span class="text-[10px] font-bold text-slate-500 uppercase">Account Reach (TOFU)</span><h3 class="text-2xl font-bold text-white font-mono">142.8K</h3></div></div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex items-center justify-between"><div><span class="text-[10px] font-bold text-slate-500 uppercase">Avg Engagement Rate</span><h3 class="text-2xl font-bold text-indigo-400 font-mono">11.24%</h3></div></div>
+                </div>
+            </div>
+
+            <!-- 8. TAB INTEGRATED REPORT PREPARATION -->
+            <div id="reporting-tab" class="space-y-6 tab-content-view hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-file-invoice-graph text-blue-500 mr-1"></i> Dashboard Reporting & Downloader Suite</h3>
+                        <button onclick="executeSystemIntegratedReportCompilation()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl text-xs transition-all">Compile Report</button>
+                    </div>
+                </div>
+                <div id="reportTerminalLogsBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 hidden space-y-2">
+                    <div id="terminalLogTextField" class="p-4 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-slate-400 leading-relaxed"></div>
+                </div>
+            </div>
+
+            <!-- 9. TAB SETTINGS & ADVANCED COLLABORATIVE TEAM AUDIT TRAIL LOGS -->
+            <div id="settings-tab" class="space-y-6 tab-content-view hidden">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider"><i class="fa-solid fa-clock-rotate-left text-purple-400 mr-2"></i> Team Activity Change Logs & Access Control Audit</h3>
+                        <span class="text-[9px] bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded font-bold uppercase font-mono">Live Tracking Active</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">Seluruh aktivitas anggota tim (Andi, Budi, Cici) yang berkolaborasi di dalam sistem workspace ini tercatat secara otomatis dan transparan untuk memudahkan supervisi kerja.</p>
+                    
+                    <!-- THE TIME LOG STACK GRID -->
+                    <div class="space-y-2.5 overflow-y-auto max-h-64" id="teamActivityAuditLogContainer">
+                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs font-medium">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-circle-notch text-blue-400 animate-spin text-[10px]"></i><div><span class="text-white font-bold">Andi (Sosmed Specialist)</span><span class="text-slate-400 ml-2">Menyalin hasil draf skrip 'Matrix Engine' ke antrean Kalender Konten</span></div></div>
+                            <span class="text-[10px] font-mono text-slate-600 font-bold">Baru saja</span>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs font-medium">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-copy text-purple-400 text-[11px]"></i><div><span class="text-white font-bold">Budi (Content Creator)</span><span class="text-slate-400 ml-2">Melakukan duplikasi baris konten di database repositori utama</span></div></div>
+                            <span class="text-[10px] font-mono text-slate-600 font-bold">2 menit yang lalu</span>
+                        </div>
+                        <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs font-medium">
+                            <div class="flex items-center gap-3"><i class="fa-solid fa-shield-check text-emerald-400 text-[11px]"></i><div><span class="text-white font-bold">Cici (Brand Owner)</span><span class="text-slate-400 ml-2">Mengunci perubahan data form asesmen awal 'Brand Blueprint Klien'</span></div></div>
+                            <span class="text-[10px] font-mono text-slate-600 font-bold">10 menit yang lalu</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ACTION SUCCESS NOTIFICATION TOAST BAR SYSTEM -->
+    <div id="globalActionToast" class="fixed bottom-6 right-6 bg-slate-900 border border-emerald-500/30 p-4 rounded-xl shadow-2xl flex items-center gap-3 hidden z-50 transform translate-y-2 transition-all">
+        <div class="w-8 h-8 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center text-sm"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+            <h5 class="text-xs font-bold text-white leading-none mb-1">Sinkronisasi Berhasil!</h5>
+            <p class="text-[10px] text-slate-400">Log aktivitas operasi sukses dicatat ke sistem audit trail.</p>
+        </div>
+    </div>
+
+    <!-- APPLICATION CENTRAL COMPLEX STATE MANAGEMENT JAVASCRIPT LOGIC -->
+    <script>
+        let activeAccountsDatabase = {
+            acc1: { brandName: "EduTech Co.", niche: "Pendidikan Karir Digital", commStyle: 0, slogan: "Belajar praktis digital marketing langsung dari kacamata industri kerja nyata" },
+            acc2: { brandName: "Ayam Nampol", niche: "Kuliner Makanan Pedas", commStyle: 1, slogan: "Makan pedas gurih nagih tanpa bikin dompet nangis bolong" },
+            acc3: { brandName: "", niche: "", commStyle: 0, slogan: "" },
+            acc4: { brandName: "", niche: "", commStyle: 0, slogan: "" },
+            acc5: { brandName: "", niche: "", commStyle: 0, slogan: "" }
+        };
+
+        function syncDropdownNameLabelOnInput(typedValue) {
+            const currentOptionItem = document.getElementById(`opt-${currentActiveAccountKey}`);
+            const slotIndex = currentActiveAccountKey.replace("acc", "");
+            if(typedValue.trim() === "") {
+                currentOptionItem.innerText = `💼 Slot ${slotIndex}: Kosong / Baru`;
+                document.getElementById('headerBrandBadge').innerText = "Akun Baru";
+            } else {
+                currentOptionItem.innerText = `💼 Slot ${slotIndex}: ${typedValue}`;
+                document.getElementById('headerBrandBadge').innerText = typedValue;
+            }
+            activeAccountsDatabase[currentActiveAccountKey].brandName = typedValue;
+        }
+
+        function handleAccountDatabaseSwitch() {
+            const previousAccountKey = currentActiveAccountKey;
+            const chosenAccountKey = document.getElementById('accountSwitcher').value;
+            
+            activeAccountsDatabase[previousAccountKey].niche = document.getElementById('bpInputIndustryNiche').value;
+            activeAccountsDatabase[previousAccountKey].commStyle = document.getElementById('bpSelectCommStyle').selectedIndex;
+            activeAccountsDatabase[previousAccountKey].slogan = document.getElementById('bpInputSlogan').value;
+
+            currentActiveAccountKey = chosenAccountKey;
+            const targetData = activeAccountsDatabase[chosenAccountKey];
+
+            document.getElementById('bpInputBrandName').value = targetData.brandName || "";
+            document.getElementById('bpInputIndustryNiche').value = targetData.niche || "";
+            document.getElementById('bpSelectCommStyle').selectedIndex = targetData.commStyle || 0;
+            document.getElementById('bpInputSlogan').value = targetData.slogan || "";
+
+            document.getElementById('headerBrandBadge').innerText = targetData.brandName || "Akun Baru";
+            logTeamActionAuditTrail("Membuka berkas profile brand slot " + chosenAccountKey);
+        }
+
+        function saveCurrentBlueprintDataState() {
+            logTeamActionAuditTrail("Mengunci berkas form asesmen strategi Brand Blueprint Klien");
+            triggerGlobalToastNotificationAlert("Blueprint Klien Berhasil Dikunci!", "AI sudah dikonfigurasi mengikuti gaya komunikasi brand.");
+        }
+
+        function switchAppTabSection(tabId, btnElement) {
+            document.querySelectorAll('.tab-content-view').forEach(content => content.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'font-semibold');
+                btn.classList.add('text-slate-400', 'font-medium');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            if (btnElement && btnElement.classList.contains('tab-btn')) {
+                btnElement.classList.remove('text-slate-400', 'font-medium');
+                btnElement.classList.add('bg-blue-600', 'text-white', 'font-semibold');
+            }
+
+            const headersMapMeta = {
+                'overview-tab': ['Dashboard Overview Panel', 'Pusat pemantauan ekosistem distribusi konten dan integrasi API penyimpanan komputasi awan.'],
+                'blueprint-tab': ['Brand Blueprint Center Asesmen', 'Lakukan pengisian data pilar taktis awal secara detail mendalam untuk merumuskan kompas strategi AI.'],
+                'ideation-room-tab': ['AI Ideation Room Sandbox', 'Ruang coretan bebas dinamis interaktif untuk berdiskusi merumuskan draf ide pemasaran bersama Gemini.'],
+                'content-matrix-tab': ['Content Ideation Modular Matrix Center', 'Cetak draf ide runtut terarah ke bawah lengkap mulai dari Opsi Angle, Hook, Foreshadow, Narasi Isi, hingga CTA.'],
+                'viral-engine-tab': ['Viral Engine Pattern Extraction Suite', 'Bongkar anatomi susunan video, gambar carousel, atau draf meme tren kompetitor dalam hitungan detik.'],
+                'content-database-tab': ['Multi Platform Content Database System', 'Lembar repositori utama pelacakan data pilar status, approval, dan duplikasi baris materi.'],
+                'kanban-tab': ['Flowra Grade Kanban Board Tracker', 'Pantau linimasa pergerakan kemajuan pengerjaan draf naskah dari kolom ke kolom secara transparan.'],
+                'performance-tab': ['Professional Flowra Dashboard Tracker', 'Kalkulasi data jangkauan metrik performa kurva multi-axis terintegrasi leaderboard otomatis.'],
+                'reporting-tab': ['Automated Report Compilation & Presentation Slide Builder', 'Kompilasi rekaman histori performa untuk dicetak menjadi draf slide presentasi estetik dalam sekali klik.']
+            };
+            document.getElementById('viewHeaderTitle').innerText = headersMapMeta[tabId][0];
+            document.getElementById('viewHeaderDesc').innerText = headersMapMeta[tabId][1];
+        }
+
+        // FEATURE ACCESS LOGIC: REAL-TIME SEARCH FOR CONTENT DATABASE TABLE
+        function liveSearchContentDatabaseTable() {
+            const query = document.getElementById('dbSearchInput').value.toLowerCase();
+            document.querySelectorAll('.db-row-item').forEach(row => {
+                const titleText = row.querySelector('td').innerText.toLowerCase();
+                if(titleText.includes(query)) {
+                    row.classList.remove('hidden');
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        // FEATURE ACCESS LOGIC: DYNAMICALLY DUPLICATE CONTENT DATABASE ITEM ROW
+        function duplicateContentDatabaseRowItem(buttonElement) {
+            const targetRow = buttonElement.closest('tr');
+            const cloneRow = targetRow.cloneNode(true);
+            
+            // Highlight text title adjustment to indicate replication visually
+            const originalTitle = cloneRow.querySelector('td').innerText;
+            cloneRow.querySelector('td').innerHTML = originalTitle + " <span class='text-blue-400 font-sans text-[10px]'>(Copy)</span>";
+            
+            targetRow.after(cloneRow);
+            logTeamActionAuditTrail("Melakukan duplikasi baris konten database '" + originalTitle.substring(0, 20) + "...'");
+            triggerGlobalToastNotificationAlert("Baris Konten Berhasil Diduplikasi!", "Item materi baru langsung dimasukkan ke baris database.");
+        }
+
+        function deleteContentDatabaseRowItem(buttonElement) {
+            const targetRow = buttonElement.closest('tr');
+            const title = targetRow.querySelector('td').innerText;
+            targetRow.remove();
+            logTeamActionAuditTrail("Menghapus item baris konten database '" + title.substring(0, 20) + "...'");
+        }
+
+        function openAddNewContentDatabaseRowModal() {
+            const title = prompt("Masukkan Judul Konten Baru:");
+            if(!title) return;
+            
+            const body = document.getElementById('contentDatabaseTableBodyRows');
+            body.innerHTML += `
+                <tr class="db-row-item">
+                    <td class="p-3 text-white font-bold tracking-tight">${title}</td>
+                    <td class="p-3"><span class="bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 text-[10px] font-bold">Instagram</span></td>
+                    <td class="p-3 text-slate-400">Video</td>
+                    <td class="p-3">Edukasi</td>
+                    <td class="p-3 font-mono text-amber-400 font-bold">TOFU</td>
+                    <td class="p-3"><span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded text-[10px] font-bold">Scripting</span></td>
+                    <td class="p-3"><span class="text-amber-500 text-[11px]"><i class="fa-solid fa-clock mr-1"></i> Pending</span></td>
+                    <td class="p-3 text-right text-slate-500 text-sm"><button onclick="duplicateContentDatabaseRowItem(this)" class="hover:text-blue-400 mr-2"><i class="fa-solid fa-copy"></i></button><button onclick="deleteContentDatabaseRowItem(this)" class="hover:text-red-400"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `;
+            logTeamActionAuditTrail("Menambahkan konten baru '" + title.substring(0, 20) + "...' ke database");
+        }
+
+        // LOG TEAM AUDIT TRAIL AUTOMATION WRAPPER
+        function logTeamActionAuditTrail(actionDescriptionString) {
+            const currentOperatorUser = document.getElementById('teamUserSwitcher').value;
+            const containerLogBox = document.getElementById('teamActivityAuditLogContainer');
+            
+            containerLogBox.innerHTML = `
+                <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl flex items-center justify-between text-xs font-medium animate-pulse">
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-circle-notch text-blue-400 animate-spin text-[10px]"></i><div><span class="text-white font-bold">${currentOperatorUser}</span><span class="text-slate-400 ml-2">${actionDescriptionString}</span></div></div>
+                    <span class="text-[10px] font-mono text-slate-600 font-bold">Baru saja</span>
+                </div>
+            ` + containerLogBox.innerHTML;
+        }
+
+        function executeSandboxChatResponse() {
+            const str = document.getElementById('sandboxChatInputField').value;
+            if(!str) return;
+            document.getElementById('sandboxChatOutputWrapper').innerHTML += `<div class="p-2 bg-slate-900 rounded mb-2 text-blue-400"><strong>You:</strong> ${str}</div>`;
+            logTeamActionAuditTrail("Melemparkan instruksi draf materi ke AI Ideation Room");
+            document.getElementById('sandboxChatInputField').value = '';
+        }
+
+        function generateMatrixModularDownwardFlow() {
+            document.getElementById('mOutputAngleLabel').innerText = `Strategic Angle: Menyerang bias kegagalan persepsi pengerjaan portofolio kaku konvensional.`;
+            document.getElementById('mOutputHooksBox').innerHTML = `<div class="bg-slate-950 p-2.5 rounded-lg text-xs">“Nunggu lulus kuliah baru bikin draf portofolio digital marketing? Selamat, resume kamu resmi berakhir di tong sampah HRD...”</div>`;
+            document.getElementById('mFlowWorkspaceBox').classList.remove('hidden');
+            logTeamActionAuditTrail("Menjalankan eksekusi draf skrip narasi di Content Matrix");
+        }
+
+        function executeViralDetailedGridBarVisualization() {
+            document.getElementById('vDetailedMatrixGridRows').classList.remove('hidden');
+        }
+
+        function toggleCalendarSubDisplay(mode) {
+            const grid = document.getElementById('displaySpaceGrid');
+            const kanban = document.getElementById('displaySpaceKanban');
+            if(mode === 'grid') { grid.classList.remove('hidden'); kanban.classList.add('hidden'); }
+            else { grid.classList.add('hidden'); kanban.classList.remove('hidden'); }
+        }
+
+        function injectIntoCentralCalendarSystem(tag) {
+            logTeamActionAuditTrail("Mengirim draf materi buatan Matrix Engine ke halaman kalender");
+            triggerGlobalToastNotificationAlert("Draf Berhasil Dikirim!", "Data konten otomatis terinjeksi masuk.");
+        }
+
+        function executeSystemIntegratedReportCompilation() {
+            document.getElementById('terminalLogTextField').innerText = `[COMPILING DATA FROM INTEGRATED REPOSITORY...] \nSukses menarik semua draf database konten dan log aktivitas tim.`;
+            document.getElementById('reportTerminalLogsBox').classList.remove('hidden');
+        }
+
+        function printAutomatedPresentationDeckSlides() {
+            alert(`Cetak Slide Presentasi Berhasil Selesai!`);
+        }
+    </script>
+</body>
+</html>
